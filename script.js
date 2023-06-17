@@ -32,13 +32,13 @@ function playRound(playerSelection, computerValue) {
   if (difference === 0) {
     return "It's a tie";
   } else if (difference === 1 || difference === -2) {
-    playerScore++;
+    ++playerScore;
 
     return `You Win! ${capitalizeFirstLetter(
       playerSelection
     )} beats ${capitalizeFirstLetter(computerSelection)}`;
   } else if (difference === -1 || difference === 2) {
-    computerScore++;
+    ++computerScore;
 
     return `You Lose! ${capitalizeFirstLetter(
       computerSelection
@@ -49,28 +49,41 @@ function playRound(playerSelection, computerValue) {
 }
 
 function game() {
-  let playerSelection;
+  let gamePlaying = true;
 
-  for (let i = 0; i < 5; i++) {
-    playerSelection = prompt("Rock, Paper, or Scissors?");
-    console.log(playRound(playerSelection, getComputerValue()));
-  }
+  playerSelects.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (gamePlaying) {
+        result.textContent = playRound(button.className, getComputerValue());
+        playerScoreEl.textContent = playerScore;
+        computerScoreEl.textContent = computerScore;
 
-  if (playerScore > computerScore) {
-    console.log(
-      `You Win! you scored ${playerScore} points, computer scored ${computerScore} points.`
-    );
-  } else if (playerScore < computerScore) {
-    console.log(
-      `You Lose! you scored ${playerScore} points, computer scored ${computerScore} points. `
-    );
-  } else {
-    `Tied... you both scored ${playerScore}`;
-  }
+        if (playerScore === 5 || computerScore === 5) {
+          gamePlaying = false;
 
-  playerScore = 0;
-  computerScore = 0;
+          if (playerScore > computerScore) {
+            finalResult.textContent = `You're the first to gained 5 points. You win!!!`;
+          } else if (playerScore < computerScore) {
+            finalResult.textContent = `Computer has gained 5 points first. You lose :(`;
+          } else {
+            finalResult.textContent = `Tied... both scored the same`;
+          }
+        }
+      }
+    });
+  });
+
+  // playerScore = 0;
+  // computerScore = 0;
 }
+
+const result = document.querySelector(".result");
+const finalResult = document.querySelector(".final-result");
+const playerSelects = document.querySelectorAll("button");
 
 let playerScore = 0;
 let computerScore = 0;
+let playerScoreEl = document.querySelector(".player-score");
+let computerScoreEl = document.querySelector(".computer-score");
+
+game();
